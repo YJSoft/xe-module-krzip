@@ -3,7 +3,7 @@
 			<div class="krZip">
 				<input type="hidden" class="addr_first" name="{$krzip->column_name}[]" value="{$krzip->values[0]}" data-origin-value="{$krzip->values[0]}" />
 				<div class="addr_indicator box">
-					<input type="text" class="current_address" readonly="readonly" value="{$krzip->values[0]} {$krzip->values[1]}">
+					<input type="text" class="current_address" readonly="readonly" value="{$krzip->values[0]} {$krzip->values[1]} {$krzip->values[2]}">
 					<button type="button" class="btn delete">{$lang->cmd_delete}</button>
 					<button type="button" class="btn cancel">{$lang->cmd_cancel}</button>
 				</div>
@@ -58,6 +58,7 @@
 					<p>{$lang->cmd_kr_address_etc}</p>
 					<input type="text" class="addr_second" name="{$krzip->column_name}[]" value="{$krzip->values[1]}" data-origin-value="{$krzip->values[1]}" />
 					<button cond="false" type="button" class="btn submit_addr4">{$lang->cmd_complete}</button>
+					<input type="hidden" class="addr_third" name="{$krzip->column_name}[]" value="{$krzip->values[2]}" data-origin-value="{$krzip->values[2]}" />
 				</div>
 
 			</div>

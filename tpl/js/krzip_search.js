@@ -24,6 +24,7 @@
 		var input_addr = []; // 사용자로부터 입력, 선택되는 정보, 0:광역시도/1:시군구/2:사용자가 입력한 상세검색주소
 		var new_addr_first =''; // 사용자가 선택한 도로주소
 		var new_addr_second = ''; // 사용자가 입력한 나머지 주소
+		var new_addr_third = ''; // 사용자가 선택한 도로주소의 참고, 번지
 		var step = 0;
 		
 		var ui = {
@@ -31,6 +32,7 @@
 			'currentAddress' : $(this.find('.current_address')), // show current
 			'addrFirst' : $(this.find('input.addr_first')), // current_address
 			'addrSecond' : $(this.find('input.addr_second')), // current_address
+			'addrThird' : $(this.find('input.addr_third')), // current_address
 			'delButton' : $(this.find('.addr_indicator.box button.delete')).data('status',[1,0,0,0,0,0,1]),
 			'cancelButton' : $(this.find('.addr_indicator.box button.cancel')).data('status',[0,1,1,1,1,1,0]),
 			'addr1selector' : $(this.find('.addr1_selector.box')).data('status',[0,1,0,0,0,0,0]),
@@ -54,6 +56,7 @@
 		ui.delButton.click(function(){
 			ui.addrFirst.val('');
 			ui.addrSecond.val('');
+			ui.addrThird.val('');
 			ui.currentAddress.val('');
 		});
 		
@@ -61,7 +64,8 @@
 		ui.cancelButton.click(function(){
 			ui.addrFirst.val(ui.addrFirst.data('originValue'));
 			ui.addrSecond.val(ui.addrSecond.data('originValue'));
-			ui.currentAddress.val(ui.addrFirst.val() + ' ' + ui.addrSecond.val());
+			ui.addrThird.val(ui.addrThird.data('originValue'));
+			ui.currentAddress.val(ui.addrFirst.val() + ' ' + ui.addrSecond.val() + ' ' + ui.addrThird.val());
 			goStep0();
 		});
 
@@ -94,7 +98,11 @@
 		ui.addr3selector.on('click', 'table button.sel_detail', 'click', function(){
 			ui.addrSecond.val('');
 			ui.addrSecond.focus();
-			goStep5($(this).closest('tr').find('td:first span').text(),$(this).closest('tr').find('td:eq(1)').text());
+			goStep5(
+				$(this).closest('tr').find('td:first span:first').text(),
+				$(this).closest('tr').find('td:first span:eq(1)').text(),
+				$(this).closest('tr').find('td:eq(1)').text()
+			);
 			return false;
 		});
 		
@@ -111,7 +119,7 @@
 
 		var setIndicator = function() {
 			// currentAddress 셋팅
-			if(new_addr_first) ui.currentAddress.val(new_addr_first + new_addr_second);
+			if(new_addr_first) ui.currentAddress.val(new_addr_first + ' ' + new_addr_second + new_addr_third);
 			else ui.currentAddress.val(input_addr.join(' '));
 		};
 		
@@ -226,8 +234,8 @@
 						if(res.values.address.length) {
 							
 							$.each(res.values.address, function(i){
-								var bdname = this.bdname?' ('+this.bdname+')':'';
-								html += '<tr><td>[도로명] <span class="addr_list">'+this.addr1+' '+this.addr2_new + bdname +'</span><br/>[지번] ' + this.addr1+' '+this.addr2_old+'</td><td>'+this.zipcode+'</td><td><button type="button" class="btn sel_detail">선택</button></td></tr>';
+								var bdname = this.bdname?'('+this.bdname+')':'';
+								html += '<tr><td>[도로명] <span class="addr_list">'+this.addr1+' '+this.addr2_new+ ',</span> <span>'+bdname+'</span><br/>[지번] ' + this.addr1+' '+this.addr2_old+'</td><td>'+this.zipcode+'</td><td><button type="button" class="btn sel_detail">선택</button></td></tr>';
 							});
 							
 							// 검색어 하이라이트
@@ -259,8 +267,10 @@
 
 			// validate addr3
 			if (arguments.length) {
-				new_addr_first = arguments[0] + ' ('+ arguments[1] + ') ';
+				new_addr_first = arguments[0];
+				new_addr_third = arguments[1] + ' ('+ arguments[2] + ') ';
 				ui.addrFirst.val(new_addr_first);
+				ui.addrThird.val(new_addr_third);
 			}
 			
 			setIndicator();
@@ -268,6 +278,7 @@
 		};
 		
 		var goStep6 = function() {
+			// deprecated
 			
 			// step6: 나머지 주소를 입력받은 후, 완전한 주소를 출력하는 단계
 			step = STEP_COMPLETE;
